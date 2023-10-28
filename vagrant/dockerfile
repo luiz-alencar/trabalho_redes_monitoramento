@@ -1,0 +1,11 @@
+FROM ubuntu:latest
+
+# Instalação das dependências
+RUN apt-get update && apt-get install -y isc-dhcp-server
+
+# Copiar o arquivo de configuração personalizado
+COPY dhcpd.conf /etc/dhcp/dhcpd.conf
+COPY dhcpd.leases /var/lib/dhcp/dhcpd.leases
+
+# Expor a porta UDP 67 para DHCP
+EXPOSE 67/udp
