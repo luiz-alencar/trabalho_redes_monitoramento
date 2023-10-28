@@ -1,9 +1,0 @@
-version: "3"
-services:
-  apache:
-    container_name: 'Apache'
-    image: httpd:latest
-    volumes:
-      - './html/teste.html:/usr/local/apache2/htdocs'
-    ports:
-      - '80:80'
