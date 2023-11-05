@@ -1,43 +1,20 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/focal64"
+  (1..3).each do |i|
+    config.vm.define "mac#{i}" do |mac|
+      mac.vm.box = "ubuntu/bionic64"
+      if i == 1
+        mac.vm.network "private_network", ip: "192.168.50.1#{i}"
+      elsif i == 2
+        mac.vm.network "private_network", ip: "192.168.50.254"
+        mac.vm.network "private_network", ip: "10.0.0.254"
+      elsif i = 3
+        mac.vm.network "private_network", ip: "10.0.0.#{i}"
+      end
+      mac.vm.provider "virtualbox" do |vb|
+        vb.memory = 512
+      end
 
-  # Configuração da primeira máquina virtual
-  config.vm.define "mac1" do |mac1|
-    mac1.vm.provider "virtualbox" do |vb|
-      vb.memory = "512"
-      vb.cpus = "1"
+      mac.vm.provision "shell", path: "route#{i}.sh"
     end
-
-    config.vm.provision "shell",  path: "route1.sh"
-
-    #mac1.vm.network "forwarded_port", guest: 80, host: 8080
-    mac1.vm.network "private_network", ip: "192.168.0.1"
-  end
-
-  # Configuração da segunda máquina virtual
-  config.vm.define "mac2" do |mac2|
-    mac2.vm.provider "virtualbox" do |vb|
-      vb.memory = "512"
-      vb.cpus = "1"
-    end
-
-    config.vm.provision "shell",  path: "route2.sh"
-
-    mac2.vm.network "private_network", ip: "192.168.0.254"
-    mac2.vm.network "private_network", ip: "10.0.0.254"
-  end
-
-    #mac2.vm.network "forwarded_port", guest: 80, host: 8081
-
-  config.vm.define "mac3" do |mac3|
-    mac3.vm.provider "virtualbox" do |vb|
-      vb.memory = "512"
-      vb.cpus = "1"
-    end
-
-    config.vm.provision "shell",  path: "route3.sh"
-
-    #mac3.vm.network "forwarded_port", guest: 80, host: 8082
-    mac3.vm.network "private_network", ip: "10.0.0.1"
   end
 end
